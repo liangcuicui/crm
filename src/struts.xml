@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <!DOCTYPE struts PUBLIC 
+	"-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+	<struts>
+		<!-- 配置所传文件的总大小 -->
+		<constant name="struts.multipart.maxSize" value="5242880"></constant>
+		<package name="crm" extends="struts-default" namespace="/">
+			<interceptors>
+				<interceptor name="privilege" class="com.crm.web.interceptor.PrivilegeInterceptor"></interceptor>
+			</interceptors>
+			<global-results>
+				<result name="login">/login.jsp</result>
+			</global-results>
+			<action name="user_*" class="userAction" method="{1}">
+				
+				<result name="registfail">/regist.jsp</result>
+				<result name="loginSuccess" type="redirect">/index.jsp</result>
+				<interceptor-ref name="privilege">
+					<!-- 但是拦截的时候不能拦截注册和登录 -->
+					<param name="excludeMethods">regist,login</param>
+				</interceptor-ref>
+				<interceptor-ref name="defaultStack"></interceptor-ref>
+			</action>
+			<action name="customer_*" class="customerAction" method="{1}">
+				<result name="saveUI">/jsp/customer/add.jsp</result>
+				<result name="save" type="redirectAction">customer_findAll.action</result>
+				<result name="findAll" >/jsp/customer/list.jsp</result>
+				<result name="input">/jsp/customer/add.jsp</result>
+				<result name="deleteSuccess" type="redirectAction">customer_findAll.action</result>
+				<result name="editSuccess" >/jsp/customer/edit.jsp</result>
+				<!-- 设置单个图片上传大小 -->
+				<interceptor-ref name="privilege"></interceptor-ref>
+				<interceptor-ref name="defaultStack">
+					<param name="fileUpload.maximumSize">2097152</param>
+					<!-- 设置允许的上传文件的类型 -->
+					<!-- 如果用户添加的是别的类型，会出错，因此需要一个input试图，让他再跳转到天界页面，重新去添加 -->
+					<param name="fileUpload.allowedExtensions">.jpg,.bmp,.png</param>
+				</interceptor-ref>
+			</action>
+			<action name="baseDict_*" class="baseDictAction" method="{1}">
+			</action>
+			<action name="linkman_*" class="linkManAction" method="{1}">
+				<result name="saveUI">/jsp/linkman/add.jsp</result>
+				<result name="findAll">/jsp/linkman/list.jsp</result>
+				<result name="save" type="redirectAction">linkman_findAll.action</result>
+				<result name="edit">/jsp/linkman/edit.jsp</result>
+				<result name="update" type="redirectAction">linkman_findAll.action</result>
+				<result name="delete" type="redirectAction">linkman_findAll.action</result>
+				<interceptor-ref name="privilege"></interceptor-ref>
+				<interceptor-ref name="defaultStack"></interceptor-ref>
+			</action>
+			<action name="visit_*" class="visitAction" method="{1}">
+				<result name="findAll">/jsp/visit/list.jsp</result>
+				<result name="saveUI">/jsp/visit/add.jsp</result>
+				<result name="save" type="redirectAction">visit_findAll.action</result>
+				<interceptor-ref name="privilege"></interceptor-ref>
+				<interceptor-ref name="defaultStack"></interceptor-ref>
+			</action>
+		</package>
+	</struts>

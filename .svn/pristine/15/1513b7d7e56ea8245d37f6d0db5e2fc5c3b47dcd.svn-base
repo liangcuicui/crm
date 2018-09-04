@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+    <hibernate-mapping>
+    	<class name="com.crm.domain.Visit" table="sale_visit">
+    	<!-- visit_id是字符串类型的哦 -->
+    		<id name="visit_id">
+    			<generator class="uuid"></generator>
+    		</id>
+    		<property name="visit_time"></property>
+    		<property name="visit_addr"></property>
+    		<property name="visit_detail"></property>
+    		<property name="visit_nexttime"></property>
+    		<many-to-one name="customer" class="com.crm.domain.Customer" column="visit_cust_id"></many-to-one>
+    		<many-to-one name="user" class="com.crm.domain.User" column="visit_user_id"></many-to-one>
+    	</class>
+    	
+    </hibernate-mapping>

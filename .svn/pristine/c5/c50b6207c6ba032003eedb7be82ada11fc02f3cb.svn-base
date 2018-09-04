@@ -1,0 +1,43 @@
+package com.crm.web.action;
+
+import com.crm.domain.User;
+import com.crm.service.UserService;
+import com.opensymphony.xwork2.ActionSupport;
+import com.opensymphony.xwork2.ModelDriven;
+
+public class UserAction extends ActionSupport implements ModelDriven<User>{
+	/**
+	 * 模型驱动
+	 */
+	private User user = new User();
+	@Override
+	public User getModel() {
+		// TODO Auto-generated method stub
+		return user;
+	}
+	private UserService userService;
+	
+	public void setUserService(UserService userService) {
+		this.userService = userService;
+	}
+
+	/**
+	 * 注册
+	 * @return
+	 */
+	public String regist() {
+		String code = user.getUser_code();
+		String password = user.getUser_password();
+		String name = user.getUser_name();
+		System.out.println("code="+code);
+		System.out.println("name="+name);
+		if(code.length()==0||name.length()==0) {
+			//返回错误信息到页面
+			this.addActionError("请填写完整");
+			return "registfail";
+		}else {
+			userService.regist(user);
+			return LOGIN;
+		}
+	}
+}

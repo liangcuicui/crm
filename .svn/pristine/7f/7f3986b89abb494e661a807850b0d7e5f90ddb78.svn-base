@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+    <hibernate-mapping>
+    	<class name="com.crm.domain.Customer" table="cst_customer">
+    		<id name="cust_id" column="cust_id">
+    			<generator class="native"></generator>
+    		</id>
+    		<property name="cust_name"></property>
+    		<!-- <property name="cust_source"></property>
+    		<property name="cust_industry"></property>
+    		<property name="cust_level"></property> -->
+    		<property name="cust_phone"></property>
+    		<property name="cust_mobile"></property>
+    		<!-- 配置客户和字典的多对一的映射 -->
+    		<many-to-one name="baseDictSource" class="com.crm.domain.BaseDict" column="cust_source"></many-to-one>
+    		<many-to-one name="baseDictIndustry" class="com.crm.domain.BaseDict" column="cust_industry"></many-to-one>
+    		<many-to-one name="baseDictLevel" class="com.crm.domain.BaseDict" column="cust_level"></many-to-one>
+    		
+    	</class>
+    </hibernate-mapping>

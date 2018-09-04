@@ -1,0 +1,119 @@
+package com.crm.web.action;
+
+
+
+import java.io.File;
+import java.io.IOException;
+
+import org.apache.commons.io.FileUtils;
+import org.hibernate.criterion.DetachedCriteria;
+
+import com.crm.domain.Customer;
+import com.crm.domain.PageBean;
+import com.crm.service.CustomerService;
+import com.crm.utils.UploadUtil;
+import com.opensymphony.xwork2.ActionContext;
+import com.opensymphony.xwork2.ActionSupport;
+import com.opensymphony.xwork2.ModelDriven;
+
+public class CustomerAction extends ActionSupport implements ModelDriven<Customer>{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private Customer customer = new Customer();
+	@Override
+	public Customer getModel() {
+		// TODO Auto-generated method stub
+		return customer;
+	}
+	private CustomerService customerService;
+	
+	public void setCustomerService(CustomerService customerService) {
+		this.customerService = customerService;
+	}
+	//使用set方法接收数据
+	private Integer currPage=1;//当前页数
+	private Integer pageSize=3;//每页多少记录数
+
+	public void setCurrPage(Integer currPage) {
+		
+		this.currPage = currPage;
+	}
+	public void setPageSize(Integer pageSize) {
+		
+		this.pageSize = pageSize;
+	}
+	/**
+	 * 为文件上传提供的三个属性
+	 */
+	private String uploadFileName;//文件名称
+	private File upload;
+	private String uploadContentType;//文件类型 
+	
+
+	public void setUploadFileName(String uploadFileName) {
+		this.uploadFileName = uploadFileName;
+	}
+	public void setUpload(File upload) {
+		this.upload = upload;
+	}
+	public void setUploadContentType(String uploadContentType) {
+		this.uploadContentType = uploadContentType;
+	}
+	/**
+	 * 新增客户，跳转到保存页面
+	 * @return
+	 */
+	public String saveUI() {
+		
+		return "saveUI";
+	}
+	/**
+	 * 保存客户
+	 * @return
+	 */
+	public String save() {
+		//上传文件
+		if(upload!=null) {
+			//指定一下上传的路径
+			String path="C:/upload";
+			//如果上传的文件，因为文件名相同而被覆盖住怎么办，，所以生成一个随机的文件名，后缀不变
+			String uuidFileName = UploadUtil.getUuidFileName(uploadFileName);
+			//目录分离
+			String realPath = UploadUtil.getPath(uuidFileName);
+			String url = path+realPath;
+			//手动创建目录
+			File file = new File(url);
+			if(!file.exists()) {
+				//不存在，就创建
+				file.mkdirs();
+			}
+			try {
+				//文件上传
+				File dicFile = new File(url+"/"+uuidFileName);
+				FileUtils.copyFile(upload, dicFile);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		customerService.save(customer);
+		return "save";
+	}
+	/**
+	 * 
+	 * 查询客户
+	 * @return
+	 */
+	public String findAll() {
+		//接收参数：分页参数
+		//使用DetachedCriteria对象，它提供了分页参数
+		DetachedCriteria detachedCriteria = DetachedCriteria.forClass(Customer.class);
+		PageBean<Customer> pageBean = customerService.findAByPage(detachedCriteria,currPage,pageSize);
+		//得到数据之后，我们需要将数据传到页面上去，因此需要使用值栈
+		ActionContext.getContext().getValueStack().push(pageBean);
+		return "findAll";
+	}
+}

@@ -1,0 +1,10 @@
+package com.crm.dao.impl;
+
+import org.springframework.orm.hibernate5.support.HibernateDaoSupport;
+
+import com.crm.dao.CustomerDao;
+import com.crm.domain.Customer;
+
+public class CustomerDaoImpl implements CustomerDao {
+
+}
